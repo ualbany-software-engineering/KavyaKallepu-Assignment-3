@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443"
+    restart: always
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    depends_on:
+      - nginx
+      - server
+
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:8080"
+    depends_on:
+      - nginx
+      - mongo
+    restart: always
+
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
