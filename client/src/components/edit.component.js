@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { Component,useState } from "react";
 import UserDataService from "../services/user.service";
 import { withRouter } from '../common/with-router';
 import AuthService from "../services/auth.service";
 import { Navigate } from "react-router-dom";
+import eventBus from "../common/EventBus";
 
 class User extends Component {
   constructor(props) {
@@ -22,18 +23,24 @@ class User extends Component {
       redirect:""
     };
   }
-
+  logOut() {
+    AuthService.logout();
+  }
   componentDidMount() {
+    console.log(this.props.router.params)
+    let { username } = this.props.router.params;
+
     const currentUser = AuthService.getCurrentUser();
     console.log(currentUser)
-    if (!currentUser) this.setState({ redirect: "/login" });
+    if (!currentUser || currentUser.username!==username){
+      eventBus.dispatch('logout')
+      this.setState({ redirect: "/login" });
+    }
     this.setState({ currentUser: currentUser, userReady: true })
-
   }
 
   onChangeUsername(e) {
     const username = e.target.value;
-
     this.setState(function(prevState) {
       return {
         currentUser: {
@@ -85,7 +92,7 @@ class User extends Component {
       });
   }
 
-
+  
   render() {
     const { currentUser } = this.state;
     if (this.state.redirect) {
@@ -93,7 +100,6 @@ class User extends Component {
     }
     return (
       <div>
-        {currentUser ? (
           <div className="edit-form">
             <h4>User update</h4>
             <form>
@@ -128,12 +134,6 @@ class User extends Component {
             </button>
             <p>{this.state.message}</p>
           </div>
-        ) : (
-          <div>
-            <br />
-            <p>Please click on a Tutorial...</p>
-          </div>
-        )}
       </div>
     );
   }

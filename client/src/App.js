@@ -71,7 +71,7 @@ class App extends Component {
 
             {currentUser && (
               <li className="nav-item">
-                <Link to={"/user/edit"} className="nav-link">
+                <Link to={"/user/edit/"+currentUser.username} className="nav-link">
                   Edit User
                 </Link>
               </li>
@@ -117,7 +117,7 @@ class App extends Component {
             <Route path="/profile" element={<Profile />} />
             <Route path="/user" element={<BoardUser />} />
             <Route path="/external" element={<External />} />
-            <Route path="/user/edit" element={<User/>} />
+            <Route path="/user/edit/:username"  element={<User/>} />
           </Routes>
         </div>
 

@@ -57,6 +57,7 @@ export default class Register extends Component {
     this.onChangeBio = this.onChangeBio.bind(this);
 
     this.state = {
+      redirect:'',
       bio: "",
       username: "",
       email: "",
@@ -125,6 +126,8 @@ export default class Register extends Component {
             message: response.data.message,
             successful: true
           });
+          this.setState({ redirect: "/login" });
+
         },
         error => {
           const resMessage =
@@ -144,6 +147,9 @@ export default class Register extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Navigate to={this.state.redirect} />
+    }
     return (
       <div className="col-md-12">
         <div className="card card-container">

@@ -122,8 +122,7 @@ export default class Home extends Component {
               </thead>
               <tbody>
                   {typeof this.state.content === "string" ?
-                  this.state.content
-                  :
+                  this.state.content :
                   this.state.content.map((item, i) => {
                       return [
                           <tr key={i}>
@@ -134,7 +133,7 @@ export default class Home extends Component {
                             <td>{item.username}</td>
                             <td>{item.bio}</td>
                             <td>
-                               <Link to="/user/edit">Edit</Link>
+                               <Link to={"/user/edit/"+item.username} >Edit</Link>
                             </td>
                           </tr>
                       ];
