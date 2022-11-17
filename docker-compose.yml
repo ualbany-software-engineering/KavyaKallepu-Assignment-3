@@ -3,32 +3,33 @@ services:
   nginx:
     image: nginx
     ports:
-      - "80:80"
+      # - "80:80"
       - "443:443"
-      - "8443:8443"
     restart: always
     volumes:
       - ./nginx/ssl:/etc/nginx/ssl/
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 
-  
+
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "8081:80"
+      - "127.0.0.1:3000:80"
     depends_on:
       - nginx
       - server
-
 
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
-    ports:
-      - "3000:8080"
+    environment:
+      - PORT=8080
+      - DB_HOST=mongo
+      - DB_NAME=users
+      - DB_PORT=27017
     depends_on:
       - nginx
       - mongo
@@ -39,3 +40,8 @@ services:
     image: mongo
     container_name: mongo
     restart: always
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
